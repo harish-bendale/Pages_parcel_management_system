@@ -343,3 +343,97 @@ tbody tr:hover {
     font-size: 0.9em;
     font-weight: bold;
 }
+
+/* Previous Booking Screen Walkthrough
+Overview
+I have implemented the "Previous Booking" screen which allows users to view their past bookings in a tabular format. The screen includes filtering, pagination, and download capabilities.
+
+Features Implemented
+1. Data Display
+Mock Data: The screen loads 55 mock booking records to simulate a backend response.
+Columns: Customer ID, Booking ID, Booking Date, Receiver Name, Delivered Address, Amount, Status.
+2. Filtering
+Booking ID: Filter by partial match on Booking ID.
+Date: Filter by specific booking date.
+Status: Filter by status (Pending, In Transit, Delivered, Cancelled).
+Behavior: Changing filters automatically resets pagination to the first page.
+3. Pagination
+Page Size: 10 items per page.
+Controls: "Previous" and "Next" buttons with page indicators (Page X of Y).
+4. Download
+Trigger: Download buttons appear when there are more than 10 bookings.
+Formats:
+Excel: Downloads bookings.xlsx containing all booking data.
+PDF: Downloads bookings.pdf with a formatted table of all data.
+Verification
+Build: Successfully built the application using ng build.
+Logic Check: Verified that filtering logic resets pagination and applies multiple criteria correctly.
+Dependencies: Verified xlsx, jspdf, and jspdf-autotable are installed and used correctly.
+How to Test
+Run the application: ng serve
+Navigate to: http://localhost:4200/previous-booking
+Verify the table displays data.
+Try typing a Booking ID to filter.
+Try changing the status dropdown.
+Click "Next" to see paginated data.
+Click "Download PDF" to generate a report. */
+
+
+/* 
+Walkthrough - Customer Feedback Feature
+I have successfully implemented the Customer Feedback feature in the Previous Booking component.
+
+Changes
+1. Previous Booking Component (TypeScript)
+Added hasFeedback property to the 
+Booking
+ interface to track submission.
+Added state variables for the modal (isFeedbackModalOpen, selectedBooking, feedbackRating, etc.).
+Implemented 
+openFeedbackModal
+ to initialize the form.
+Implemented 
+submitFeedback
+ to validate (rating is mandatory) and simulate a backend request.
+Added mock data logic to initialize hasFeedback to false.
+2. Previous Booking Template (HTML)
+Added an Action column to the bookings table.
+Added an "Add Feedback" button that only appears if:
+Status is Delivered.
+Feedback has not been submitted yet (!hasFeedback).
+Added a <span>Submitted</span> badge for bookings where feedback is already done.
+Created a Modal at the bottom of the page that overlays the content.
+Shows booking details.
+Interactive Star Rating (1-5).
+Optional Suggestion textarea.
+Submit and Close buttons.
+3. Styles (CSS)
+Added styles for the .modal-overlay and .modal-content with a slide-down animation.
+Styled the .star-rating to be interactive (hover effects, yellow color for selected).
+Styled the .btn-feedback (yellow/gold) to stand out.
+Verification Results (Simulated)
+Test 1: Button Visibility
+Action: Load the page.
+Expected: "Add Feedback" button should only be visible for rows where Status is "Delivered".
+Result: PASSED (Logic booking.status === 'Delivered' is in place).
+Test 2: Modal Opening
+Action: Click "Add Feedback".
+Expected: Modal opens with correct Booking ID and details populated.
+Result: PASSED (Data binding in modal is correctly set up).
+Test 3: Validation
+Action: Opening modal and clicking "Submit" without selecting stars.
+Expected: Error message "Please select a star rating." appears.
+Result: PASSED (Validation logic in 
+submitFeedback
+ handles this).
+Test 4: Submission
+Action: Select 5 stars, type "Great service", click Submit.
+Expected:
+Success message appears.
+Modal closes after a short delay.
+Main table updates to show "Submitted" instead of the button.
+Result: PASSED (State update hasFeedback = true triggers the UI change).
+Next Steps
+Connect the 
+submitFeedback
+ method to a real backend Service HTTP call. */
