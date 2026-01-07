@@ -1,0 +1,47 @@
+<div class="profile-container">
+  <div class="profile-card">
+    <h2>My Profile</h2>
+    <div class="profile-details">
+      <div class="detail-row">
+        <label>User Code:</label>
+        <span>{{ user.userId || 'N/A' }}</span>
+      </div>
+      <div class="detail-row">
+        <label>Customer Name:</label>
+        <span>{{ user.customerName || 'N/A' }}</span>
+      </div>
+      <div class="detail-row">
+        <label>Email ID:</label>
+        <span>{{ user.email || 'N/A' }}</span>
+      </div>
+      <div class="detail-row">
+        <label>Mobile Number:</label>
+        <span>{{ user.countryCode }} {{ user.mobileNumber }}</span>
+      </div>
+      <div class="detail-row">
+        <label>Alternate Mobile Number:</label>
+        <span>{{ user.countryCode }} {{ user.alternateMobileNumber }}</span>
+      </div>
+      <div class="detail-row">
+        <label>Address Line 1:</label>
+        <span>{{ user.addressLine1 || 'N/A' }}</span>
+      </div>
+       <div class="detail-row">
+        <label>Address Line 2:</label>
+        <span>{{ user.addressLine2 || 'N/A' }}</span>
+      </div>
+      <div class="detail-row">
+        <label>Landmark:</label>
+        <span>{{ user.landmark || 'N/A' }}</span>
+      </div>
+      <div class="detail-row">
+        <label>City:</label>
+        <span>{{ user.city || 'N/A' }}</span>
+      </div>
+      <div class="detail-row">
+        <label>Country:</label>
+        <span>{{ user.country || 'N/A' }}</span>
+      </div>
+    </div>
+  </div>
+</div>

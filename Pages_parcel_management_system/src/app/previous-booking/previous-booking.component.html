@@ -1,0 +1,75 @@
+<div class="container">
+    <h2>Previous Bookings</h2>
+
+    <!-- Filters -->
+    <div class="filters">
+        <div class="filter-group">
+            <label>Booking ID:</label>
+            <input type="text" [(ngModel)]="filterBookingId" (input)="onFilterChange()" placeholder="Search Booking ID">
+        </div>
+
+        <div class="filter-group">
+            <label>Date:</label>
+            <input type="date" [(ngModel)]="filterDate" (change)="onFilterChange()">
+        </div>
+
+        <div class="filter-group">
+            <label>Status:</label>
+            <select [(ngModel)]="filterStatus" (change)="onFilterChange()">
+                <option value="">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="In Transit">In Transit</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Download Options -->
+    <div class="download-actions" *ngIf="showDownloadOptions">
+        <button (click)="downloadExcel()" class="btn-download excel">Download Excel</button>
+        <button (click)="downloadPDF()" class="btn-download pdf">Download PDF</button>
+    </div>
+
+    <!-- Table -->
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Customer ID</th>
+                    <th>Booking ID</th>
+                    <th>Booking Date</th>
+                    <th>Receiver Name</th>
+                    <th>Delivered Address</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let booking of displayedBookings">
+                    <td>{{ booking.customerId }}</td>
+                    <td>{{ booking.bookingId }}</td>
+                    <td>{{ booking.bookingDate }}</td>
+                    <td>{{ booking.receiverName }}</td>
+                    <td>{{ booking.deliveredAddress }}</td>
+                    <td>{{ booking.amount | currency }}</td>
+                    <td>
+                        <span class="status-badge" [ngClass]="booking.status.toLowerCase().replace(' ', '-')">
+                            {{ booking.status }}
+                        </span>
+                    </td>
+                </tr>
+                <tr *ngIf="displayedBookings.length === 0">
+                    <td colspan="7" class="no-data">No bookings found matching criteria.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
+        <span>Page {{ currentPage }} of {{ totalPages }}</span>
+        <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+    </div>
+</div>
