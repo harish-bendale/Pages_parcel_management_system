@@ -13,6 +13,7 @@ interface Booking {
   deliveredAddress: string;
   amount: number;
   status: 'Pending' | 'In Transit' | 'Delivered' | 'Cancelled';
+  hasFeedback?: boolean; // Track if feedback is already submitted
 }
 
 @Component({
@@ -37,6 +38,14 @@ export class PreviousBookingComponent implements OnInit {
   itemsPerPage: number = 10;
   totalPages: number = 1;
 
+  // Feedback Modal
+  isFeedbackModalOpen: boolean = false;
+  selectedBooking: Booking | null = null;
+  feedbackRating: number = 0;
+  feedbackSuggestion: string = '';
+  feedbackError: string = '';
+  feedbackSuccess: string = '';
+
   ngOnInit(): void {
     this.loadMockData();
     this.applyFilters();
@@ -46,7 +55,8 @@ export class PreviousBookingComponent implements OnInit {
     // Simulating backend fetch of complete dataset
     // Generating 50 mock entries for demonstration
     const statuses: ('Pending' | 'In Transit' | 'Delivered' | 'Cancelled')[] = ['Pending', 'In Transit', 'Delivered', 'Cancelled'];
-    for (let i = 1; i <= 10; i++) {
+    for (let i = 1; i <= 50; i++) {
+      // Randomly assign initial feedback status for demo purposes
       this.allBookings.push({
         customerId: `CUST-${1000 + i}`,
         bookingId: `BK-${2025000 + i}`,
@@ -54,7 +64,8 @@ export class PreviousBookingComponent implements OnInit {
         receiverName: `Receiver ${i}`,
         deliveredAddress: `${i} Main St, City ${i}`,
         amount: Math.floor(Math.random() * 500) + 50,
-        status: statuses[Math.floor(Math.random() * statuses.length)]
+        status: statuses[Math.floor(Math.random() * statuses.length)],
+        hasFeedback: false
       });
     }
   }
@@ -142,5 +153,64 @@ export class PreviousBookingComponent implements OnInit {
   // Helper for UI to show if download is available
   get showDownloadOptions(): boolean {
     return this.allBookings.length > 10;
+  }
+
+  // --- Feedback Logic ---
+
+  openFeedbackModal(booking: Booking) {
+    this.selectedBooking = booking;
+    this.feedbackRating = 0;
+    this.feedbackSuggestion = '';
+    this.feedbackError = '';
+    this.feedbackSuccess = '';
+    this.isFeedbackModalOpen = true;
+  }
+
+  closeFeedbackModal() {
+    this.isFeedbackModalOpen = false;
+    this.selectedBooking = null;
+  }
+
+  setRating(rating: number) {
+    this.feedbackRating = rating;
+  }
+
+  submitFeedback() {
+    // 1. Validation
+    if (!this.selectedBooking) return;
+
+    if (this.feedbackRating === 0) {
+      this.feedbackError = 'Please select a star rating.';
+      return;
+    }
+
+    // 2. Build Request Object
+    const feedbackData = {
+      bookingId: this.selectedBooking.bookingId,
+      customerId: this.selectedBooking.customerId,
+      rating: this.feedbackRating,
+      feedbackSuggestion: this.feedbackSuggestion
+    };
+
+    console.log('Sending Feedback to Backend:', feedbackData);
+
+    // 3. Prevent duplicate submission (Simulated check)
+    if (this.selectedBooking.hasFeedback) {
+      this.feedbackError = 'Feedback already submitted for this booking.';
+      return;
+    }
+
+    // 4. Simulate API Call Success
+    // In a real app, this would be an http post subscribe
+    setTimeout(() => {
+      // Success logic
+      this.selectedBooking!.hasFeedback = true; // Update local state
+      this.feedbackSuccess = 'Feedback submitted successfully!';
+
+      // Close modal after short delay to show success message
+      setTimeout(() => {
+        this.closeFeedbackModal();
+      }, 1500);
+    }, 500);
   }
 }

@@ -43,6 +43,7 @@
                     <th>Delivered Address</th>
                     <th>Amount</th>
                     <th>Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,15 +53,22 @@
                     <td>{{ booking.bookingDate }}</td>
                     <td>{{ booking.receiverName }}</td>
                     <td>{{ booking.deliveredAddress }}</td>
-                    <td>{{ booking.amount | currency }}</td>
+                    <td>Rs. {{ booking.amount  }} </td>
                     <td>
                         <span class="status-badge" [ngClass]="booking.status.toLowerCase().replace(' ', '-')">
                             {{ booking.status }}
                         </span>
                     </td>
+                    <td>
+                        <button *ngIf="booking.status === 'Delivered' && !booking.hasFeedback"
+                            (click)="openFeedbackModal(booking)" class="btn-feedback">
+                            Add Feedback
+                        </button>
+                        <span *ngIf="booking.hasFeedback" class="feedback-submitted">Submitted</span>
+                    </td>
                 </tr>
                 <tr *ngIf="displayedBookings.length === 0">
-                    <td colspan="7" class="no-data">No bookings found matching criteria.</td>
+                    <td colspan="8" class="no-data">No bookings found matching criteria.</td>
                 </tr>
             </tbody>
         </table>
@@ -71,5 +79,42 @@
         <button (click)="prevPage()" [disabled]="currentPage === 1">Previous</button>
         <span>Page {{ currentPage }} of {{ totalPages }}</span>
         <button (click)="nextPage()" [disabled]="currentPage === totalPages">Next</button>
+    </div>
+
+    <!-- Feedback Modal -->
+    <div class="modal-overlay" *ngIf="isFeedbackModalOpen">
+        <div class="modal-content">
+            <h3>Parcel Feedback</h3>
+
+            <div class="booking-details" *ngIf="selectedBooking">
+                <p><strong>Booking ID:</strong> {{ selectedBooking.bookingId }}</p>
+                <p><strong>Date:</strong> {{ selectedBooking.bookingDate }}</p>
+                <p><strong>Receiver:</strong> {{ selectedBooking.receiverName }}</p>
+                <p><strong>Address:</strong> {{ selectedBooking.deliveredAddress }}</p>
+            </div>
+
+            <div class="form-group">
+                <label>Rate your experience (Mandatory):</label>
+                <div class="star-rating">
+                    <span *ngFor="let star of [1, 2, 3, 4, 5]" (click)="setRating(star)"
+                        [class.filled]="star <= feedbackRating">
+                        ★
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Suggestion (Optional):</label>
+                <textarea [(ngModel)]="feedbackSuggestion" rows="3" placeholder="Leave a comment..."></textarea>
+            </div>
+
+            <div class="error-message" *ngIf="feedbackError">{{ feedbackError }}</div>
+            <div class="success-message" *ngIf="feedbackSuccess">{{ feedbackSuccess }}</div>
+
+            <div class="modal-actions">
+                <button (click)="submitFeedback()" class="btn-submit" [disabled]="!!feedbackSuccess">Submit</button>
+                <button (click)="closeFeedbackModal()" class="btn-cancel">Close</button>
+            </div>
+        </div>
     </div>
 </div>
